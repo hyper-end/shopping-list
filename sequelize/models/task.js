@@ -1,23 +1,75 @@
-const { DataTypes } = require('sequelize');
+const express = require("express");
 
-// Export a function that defines the task model.
-// This function will automatically receive as parameter the Sequelize connection object.
-module.exports = (sequelize) => {
-	sequelize.define('task', {
-		// It is the default configuration for an ID. So you can skip this one.
-		id: {
-			allowNull: false,
-			autoIncrement: true,
-			primaryKey: true,
-			type: DataTypes.INTEGER
-		},
-		status: {
-			allowNull: false,
-			type: DataTypes.STRING,
-		},
-		title: {
-			allowNull: false,
-			type: DataTypes.STRING
-		},
-	});
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+require('dotenv').config()
+console.log(process.env) 
+
+const { Sequelize, DataTypes } = require("sequelize");
+
+const sequelize = new Sequelize(
+	`postgres://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBURL}:${process.env.DBPORT}/${process.env.DBNAME}`
+);
+
+//const sequelize = new Sequelize('postgres://hyper:Rox6kTdcxcRzPeEWB6Ff@104.199.12.40:5432/team14');
+
+const app = express();
+
+const Task = sequelize.define("Task", {
+	id: {
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true,
+	},
+	title: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	completed: {
+		type: DataTypes.BOOLEAN,
+	},
+});
+
+const main = async () => {
+
+	try {
+		//sequelize.sync();
+		await sequelize.authenticate();
+		console.log("Connection has been established successfully.");
+		// await sequelize.sync({ force: true });
+	} catch (error) {
+		console.error("Unable to connect to the database:", error);
+	}
 };
+
+//app.use(morgan("tiny"));
+
+const port = 3000;
+
+app.use(bodyParser.json());
+
+app.get("/tasks", async (req, res) => {
+	const tasks = await Task.findAll();
+	res.json(tasks.map((t) => t.toJSON()));
+
+	console.log(tasks);
+});
+
+app.post("/task", async (req, res) => {
+	const { title, completed } = req.body;
+	const task = await Task.create({ title, completed });
+	res.json(task.toJSON());
+});
+
+app.patch("/task/:id", async (req, res) => {
+	const { completed } = req.body;
+	const { id } = req.params;
+	await Task.update({ completed }, { where: { id } });
+	res.end();
+});
+
+app.listen(port, () => {
+	console.log(`Example app listening on port ${port}`);
+});
+
+main();
