@@ -11,8 +11,6 @@ const sequelize = new Sequelize(
 	`postgres://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBURL}:${process.env.DBPORT}/${process.env.DBNAME}`
 );
 
-//const sequelize = new Sequelize('postgres://hyper:Rox6kTdcxcRzPeEWB6Ff@104.199.12.40:5432/team14');
-
 const app = express();
 
 const Task = sequelize.define("Task", {
