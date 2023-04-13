@@ -1,81 +1,67 @@
-const express = require("express");
-const morgan = require("morgan");
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(
-	`postgres://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.DBURL}:${process.env.DBPORT}/${process.env.DBNAME}`
-);
-
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const routes = require('./routes');
+const morgan = require('morgan');
+const config = require('./config/config');
+const sequelize = require('./sequelize');
 const app = express();
 
-const Task = sequelize.define("Task", {
-	id: {
-		type: DataTypes.UUID,
-		defaultValue: DataTypes.UUIDV4,
-		primaryKey: true,
-	},
-	title: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	completed: {
-		type: DataTypes.BOOLEAN,
-	},
-});
+app.use(morgan('dev'));
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/', routes);
 
-const main = async () => {
+
+async function assertDatabaseConnectionOk() {
+	console.log(`Checking database connection...`);
 	try {
 		await sequelize.authenticate();
-		console.log("Connection has been established successfully.");
-		// await sequelize.sync({ force: true });
+		console.log('Database connection OK!');
 	} catch (error) {
-		console.error("Unable to connect to the database:", error);
+		console.log('Unable to connect to the database:');
+		console.log(error.message);
+		process.exit(1);
 	}
-};
+}
 
-app.use(morgan("tiny"));
+async function assertDatabaseCreationOK() {
+	// Making sure setup.js initialized in oder to create tables; otherwise, you will get no such table errors
 
-const port = 3000;
+	const fs = require('fs');
+	if (fs.existsSync('.dbinit')) {
+		return;
+	}
 
-app.use(bodyParser.json());
+	const runSetup = require('./sequelize/setup');
 
-app.get("/tasks", async (req, res) => {
-	const tasks = await Task.findAll();
-	res.json(tasks.map((t) => t.toJSON()));
+	await runSetup();
 
-	console.log(tasks);
-});
+	fs.writeFile(".dbinit", "Database initialized", (err) => {
+		if (err)
+			console.log(err);
+		else {
+			console.log(fs.readFileSync(".dbinit", "utf8"));
+		}
+	});
 
-app.post("/task", async (req, res) => {
-	const { title, completed } = req.body;
-	const task = await Task.create({ title, completed });
-	res.json(task.toJSON());
-});
+}
 
-app.patch("/task/:id", async (req, res) => {
-	const { completed } = req.body;
-	const { id } = req.params;
-	await Task.update({ completed }, { where: { id } });
-	res.end();
-});
+async function init() {
+	await assertDatabaseConnectionOk();
 
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
-});
+	await assertDatabaseCreationOK();
 
-main();
+	console.log(`Starting on port ${config.app.port}...`);
 
-// const express = require('express');
-// const app = express();
+	app.listen(config.app.port, () => {
+		console.log(`Express server started on port ${config.app.port}. Try some routes, such as '/api/token'.`);
+	});
+}
 
-// app.get('/', (req, res) => {
-//     res.send('hello world')
+init();
+
+// sequelize.sync().then(() => {
+//   app.listen();
+//   console.log(`Server started on port ${config.app.port}`);
 // });
-
-// app.get('/test', (req, res) => {
-//     res.send('hello test')
-// });
-
-// app.listen(8080);
-
