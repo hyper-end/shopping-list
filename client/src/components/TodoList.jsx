@@ -69,7 +69,7 @@ function TodoList() {
           onChange={handleNewTodoChange}
           required
         />
-        <button type="submit">Add Todo</button>
+        <button type="submit">+</button>
       </form>
       <ul className="todo-list">
         {todos.map((todo, index) => (
@@ -77,13 +77,13 @@ function TodoList() {
             <div className="todo-title">{todo.title}</div>
             <div className="todo-actions">
               {!todo.completed && (
-                <button
+                <button className="complete"
                   onClick={() => handleTodoUpdate(todo.id, { completed: true })}
                 >
                   Mark Complete
                 </button>
               )}
-              <button onClick={() => handleTodoDelete(todo.id)}>Delete</button>
+              <button className="delete" onClick={() => handleTodoDelete(todo.id)}>Delete</button>
             </div>
           </li>
         ))}

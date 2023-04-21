@@ -35,25 +35,23 @@ function LoginForm({ onLogin }) {
       <h2>Log In</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Username</label>
           <input
-            type="text"
+            type placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
         <div className="form-group">
-          <label>Password</label>
           <input
-            type="password"
+            type placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <button type="submit">Log In</button>
+        <button type="submit" className="LogInButton">Log In</button>
       </form>
     </div>
   );
