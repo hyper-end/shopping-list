@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Route } from 'react-router-dom'
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import TodoList from './components/TodoList';
+import LoginForm from './Components/LoginForm';
+import RegisterForm from './Components/RegisterForm';
+import TodoList from './Components/TodoList';
 import './App.css';
-import config from './utils/config';
-import axios from "./utils/axios";
+import config from './Utils/config';
+import axios from "./Utils/axios";
 import { UserContext } from './utils/UserContext';
-import ProtectedRoute from './utils/ProtectedRoute';
 
 function App() {
   const [user, setUser] = useState({
@@ -20,7 +19,7 @@ function App() {
       const token = localStorage.getItem('token');
       console.log(token)
       if (token !== null) {
-        const data = await axios.get(
+        const response = await axios.get(
           `${config.app.api}api/token`,
           {
             headers: {
@@ -29,9 +28,11 @@ function App() {
           }
         );
 
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
+        const { user, token } = response.data;
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
         setLoading(false);
       }
     };
@@ -59,46 +60,3 @@ function App() {
 
 export default App;
 
-
-
-/*import { useState } from 'react';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import TodoList from './components/TodoList';
-import './App.css';
-
-function App() {
-  const [user, setUser] = useState(null);
-
-  const handleLogin = (user) => {
-    setUser(user);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
-
-  const handleRegister = (user) => {
-    setUser(user);
-  };
-
-  return (
-    <div className="app-container">
-      <header>
-        <h1>Todo List App</h1>
-        {user ? (
-          <button onClick={handleLogout}>Logout</button>
-        ) : (
-          <div className="auth-buttons">
-            <LoginForm onLogin={handleLogin} />
-            <RegisterForm onRegister={handleRegister} />
-          </div>
-        )}
-      </header>
-      {user && <TodoList />}
-    </div>
-  );
-}
-
-export default App;
-*/
