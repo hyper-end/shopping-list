@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../Utils/axios";
 import "./LoginForm.css";
 
 function LoginForm({ onLogin }) {
@@ -12,15 +12,14 @@ function LoginForm({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", { username, password });
-      console.log(response.data)
+      const response = await axios.post("/api/users/login", { username, password });
       const { user, token } = response.data;
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      navigate("/home");
+      navigate("/");
     } catch (err) {
       if (err.response && err.response.status === 401) {
         setErrorMessage("Invalid username or password");

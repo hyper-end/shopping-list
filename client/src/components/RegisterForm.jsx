@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../Utils/axios";
 import "./RegisterForm.css";
 
 function RegisterForm({ onRegister }) {
@@ -17,7 +17,7 @@ function RegisterForm({ onRegister }) {
       return;
     }
     try {
-      const response = await axios.post("/api/register", {
+      const response = await axios.post("/api/users/register", {
         username,
         password,
       });

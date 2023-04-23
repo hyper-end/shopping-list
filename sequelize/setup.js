@@ -39,7 +39,7 @@ async function run() {
 		}
 	}
 
-	console.log('Done!');
+	console.log('Database setup and seeding done!');
 }
 
 module.exports = run;

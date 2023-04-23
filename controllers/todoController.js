@@ -15,66 +15,8 @@ const verifyToken = require('../middlewares/auth');
 
 const router = Router();
 
-/// The register route creates a new user in the database, hashes their password, and sends back a JWT token for authentication.
-router.post('/api/register', async (req, res) => {
-    try {
-        const user = await models.User.create(req.body);
-        const token = jwt.sign({ userId: user.id }, config.jwt.secret, { expiresIn: '1h' });
-        res.status(201).json({ user, token });
-    } catch (err) {
-        console.error(err);
-        res.status(400).json({ message: 'Invalid user information' });
-    }
-});
-
-/// The login route checks if the provided username and password match a user in the database, and if so, sends back a JWT token for authentication.
-router.post('/api/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        //auser = await models.User.create({username:'test',password:'123123'});
-        // return;
-        const user = await models.User.findOne({ where: { username } });
-
-        if (!user) {
-            return res.status(401).json({ message: 'Authentication failed' });
-        }
-
-        const isPasswordValid = await user.comparePassword(password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Authentication failed' });
-        }
-
-        const token = jwt.sign({ username: user.username }, config.jwt.secret, { expiresIn: '1h' });
-
-        res.json({ user, token });
-    } catch (err) {
-        console.error(err);
-        res.status(400).json({ message: 'Invalid credentials' });
-    }
-});
-
-/// To check for token validity from client app
-router.get('/api/token', verifyToken, async (req, res) => {
-    try {
-        console.log("req.username", req.username)
-        let username = req.username;
-        const user = await models.User.findOne({ where: { username } });
-
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-
-        res.json({ user, token: req.token });
-
-    } catch (err) {
-        console.error(err);
-        return res.status(401).json({ message: 'Invalid token' });
-    }
-});
-
 /// The todos route gets all todos from the database and includes the associated user information
-router.get('/api/todos', verifyToken, async (req, res) => {
+router.get('/todos', verifyToken, async (req, res) => {
     try {
         const todos = await models.Todo.findAll({
             include: models.User, order: [
@@ -89,7 +31,7 @@ router.get('/api/todos', verifyToken, async (req, res) => {
 });
 
 /// The todos route with a POST method creates a new todo in the database. 
-router.post('/api/todos', verifyToken, async (req, res) => {
+router.post('/todos', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.create(req.body);
         res.status(201).json(todo);
@@ -100,7 +42,7 @@ router.post('/api/todos', verifyToken, async (req, res) => {
 });
 
 /// The todos route with a PUT method updates a todo by its ID in the database.
-router.put('/api/todos/:id', verifyToken, async (req, res) => {
+router.put('/todos/:id', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.findByPk(req.params.id);
 
@@ -118,7 +60,7 @@ router.put('/api/todos/:id', verifyToken, async (req, res) => {
 });
 
 /// The todos route with a PUT method updates a todo by its ID in the database.
-router.patch('/api/todos/:id', verifyToken, async (req, res) => {
+router.patch('/todos/:id', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.findByPk(req.params.id);
 
@@ -137,7 +79,7 @@ router.patch('/api/todos/:id', verifyToken, async (req, res) => {
 });
 
 /// The todos route with a DELETE method deletes a todo by its ID from the database.
-router.delete('/api/todos/:id', verifyToken, async (req, res) => {
+router.delete('/todos/:id', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.findByPk(req.params.id);
 

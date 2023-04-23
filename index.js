@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const routes = require('./routes');
+const routes = require('./controllers/routes');
 const morgan = require('morgan');
 const config = require('./config/config');
 const sequelize = require('./sequelize');
@@ -11,7 +11,6 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/', routes);
-
 
 async function assertDatabaseConnectionOk() {
 	console.log(`Checking database connection...`);
