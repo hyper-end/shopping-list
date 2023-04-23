@@ -12,7 +12,7 @@ function LoginForm({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", { username, password });
+      const response = await axios.post("/api/users/login", { username, password });
       console.log(response.data)
       const { user, token } = response.data;
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -20,7 +20,7 @@ function LoginForm({ onLogin }) {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      navigate("/home");
+      navigate("/");
     } catch (err) {
       if (err.response && err.response.status === 401) {
         setErrorMessage("Invalid username or password");

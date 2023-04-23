@@ -17,7 +17,7 @@ function RegisterForm({ onRegister }) {
       return;
     }
     try {
-      const response = await axios.post("/api/register", {
+      const response = await axios.post("/api/users/register", {
         username,
         password,
       });
