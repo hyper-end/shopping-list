@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
 		title: {
 			allowNull: false,
 			type: DataTypes.STRING
-		},
+		}
 	});
 
 	// Todo.associate = (models) => {

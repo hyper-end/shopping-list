@@ -1,5 +1,6 @@
 const sequelize = require('.');
-const { pickRandom, randomDate } = require('../utils/helpers/random');
+const { pickRandom } = require('../utils/helpers/random');
+const bcrypt = require('bcrypt');
 
 async function run() {
 	console.log('Rewriting the database, adding some dummy data.');
@@ -7,11 +8,13 @@ async function run() {
 	// Syncing the database tables
 	await sequelize.sync({ force: true });
 
+	passwordHash = await bcrypt.hash('123123', 10);
+
 	// Adding some dummy users
 	await sequelize.models.User.bulkCreate([
-		{ username: 'hossein', password:'123123' },
-		{ username: 'aria', password:'123123' },
-		{ username: 'rebekka', password:'123123' }
+		{ username: 'hossein', password: passwordHash },
+		{ username: 'aria', password: passwordHash },
+		{ username: 'rebekka', password: passwordHash }
 	]);
 
 	// Let's create random todos for each user
@@ -23,13 +26,11 @@ async function run() {
 				'Do the team building activities',
 				'Talk to the product owner',
 				'Meeting with the scrum master',
-				'Attend the classes',
-				'Thank Hossein for this amazing project',
-				'Buy a cofee for Hossein',
+				'Attend the classes'
 			]);
 
 			const completed = pickRandom([
-				true,false
+				true, false
 			]);
 
 			await user.createTodo({

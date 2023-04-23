@@ -9,19 +9,29 @@
 */
 const { Router } = require('express');
 const { models } = require('../sequelize');
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
-const verifyToken = require('../middlewares/auth');
+const verifyToken = require('../middlewares/verify-token');
 
 const router = Router();
 
 /// The todos route gets all todos from the database and includes the associated user information
 router.get('/todos', verifyToken, async (req, res) => {
     try {
+        let where = {
+            UserId: req.userId
+        }
+
+        if (req.query) {
+            switch (req.query.status) {
+                case "todo": where.completed = false; break;
+                case "completed": where.completed = true; break;
+            }
+        }
+
         const todos = await models.Todo.findAll({
             include: models.User, order: [
                 ['id', 'DESC']
             ],
+            where
         });
         res.json(todos);
     } catch (err) {
@@ -33,7 +43,10 @@ router.get('/todos', verifyToken, async (req, res) => {
 /// The todos route with a POST method creates a new todo in the database. 
 router.post('/todos', verifyToken, async (req, res) => {
     try {
-        const todo = await models.Todo.create(req.body);
+        let data = req.body;
+        const todo = await req.user.createTodo(data);
+
+        //const todo = await models.Todo.create(data);
         res.status(201).json(todo);
     } catch (err) {
         console.error(err);
@@ -46,7 +59,7 @@ router.put('/todos/:id', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.findByPk(req.params.id);
 
-        if (!todo) {
+        if (!todo || todo.UserId != req.userId) {
             return res.status(404).json({ message: 'Todo not found' });
         }
 
@@ -64,7 +77,7 @@ router.patch('/todos/:id', verifyToken, async (req, res) => {
     try {
         const todo = await models.Todo.findByPk(req.params.id);
 
-        if (!todo) {
+        if (!todo || todo.UserId != req.userId) {
             return res.status(404).json({ message: 'Todo not found' });
         }
         //todo.completed = true;

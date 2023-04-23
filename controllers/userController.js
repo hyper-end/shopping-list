@@ -2,15 +2,20 @@ const { Router } = require('express');
 const { models } = require('../sequelize');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
-const verifyToken = require('../middlewares/auth');
+const verifyToken = require('../middlewares/verify-token');
 
 const router = Router();
 
 /// The register route creates a new user in the database, hashes their password, and sends back a JWT token for authentication.
 router.post('/users/register', async (req, res) => {
     try {
-        const user = await models.User.create(req.body);
-        const token = jwt.sign({ userId: user.id }, config.jwt.secret, { expiresIn: '1h' });
+        let user = req.body;
+        if (!user.username) {
+            res.status(400).json({ message: 'Invalid user information' });
+        }
+
+        user = await models.User.create(user);
+        const token = jwt.sign({ username: user.username, userId: user.id }, config.jwt.secret, { expiresIn: '1h' });
         res.status(201).json({ user, token });
     } catch (err) {
         console.error(err);
@@ -36,7 +41,7 @@ router.post('/users/login', async (req, res) => {
             return res.status(401).json({ message: 'Authentication failed' });
         }
 
-        const token = jwt.sign({ username: user.username }, config.jwt.secret, { expiresIn: '1h' });
+        const token = jwt.sign({ username: user.username, userId: user.id }, config.jwt.secret, { expiresIn: '1h' });
 
         res.json({ user, token });
     } catch (err) {
