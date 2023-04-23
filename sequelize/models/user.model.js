@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 // Export a function that defines the user model.
 // This function will automatically receive as parameter the Sequelize connection object.
 module.exports = (sequelize) => {
+
+	// Define the user model schema
 	let userSchema = sequelize.define('User', {
 		id: {
 			allowNull: false,
@@ -26,6 +28,7 @@ module.exports = (sequelize) => {
 		}
 	});
 
+	// Hash the password before creating a new user
 	userSchema.beforeCreate(function (user, options) {
 		return new Promise((resolve, reject) => {
 			bcrypt.hash(user.password, 10).then(hash => {
@@ -37,14 +40,17 @@ module.exports = (sequelize) => {
 		});
 	});
 
+	// Define the association between User and Todo models
 	userSchema.associate = (models) => {
 		User.hasMany(models.Todo);
 	};
 
+	// Compare user's password with given password
 	userSchema.prototype.comparePassword = async function (password) {
 		return await bcrypt.compare(password, this.password);
 	};
 
+	// Override toJSON method to remove the password field from returned user object
 	userSchema.prototype.toJSON = function () {
 		const values = Object.assign({}, this.get());
 
@@ -53,7 +59,6 @@ module.exports = (sequelize) => {
 		return values;
 	};
 
-
+	// Return the user model schema
 	return userSchema;
-
 };
