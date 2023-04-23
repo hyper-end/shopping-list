@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
-import LoginForm from "./Components/LoginForm";
-import RegisterForm from "./Components/RegisterForm";
+import LoginForm from "./Components/Auth/LoginForm";
+import RegisterForm from "./Components/Auth/RegisterForm";
 import TodoList from "./Components/TodoList";
 import "./App.css";
 
