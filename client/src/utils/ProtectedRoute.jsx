@@ -45,6 +45,7 @@ const ProtectedRoute = ({ children }) => {
           ...prev,
           user: userData,
           token: jwt,
+          isAuth
         };
       });
     };

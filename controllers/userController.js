@@ -48,7 +48,6 @@ router.post('/users/login', async (req, res) => {
 /// To check for token validity from client app
 router.get('/users/token', verifyToken, async (req, res) => {
     try {
-        console.log("req.username", req.username)
         let username = req.username;
         const user = await models.User.findOne({ where: { username } });
 

@@ -13,7 +13,6 @@ function LoginForm({ onLogin }) {
     e.preventDefault();
     try {
       const response = await axios.post("/api/users/login", { username, password });
-      console.log(response.data)
       const { user, token } = response.data;
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       

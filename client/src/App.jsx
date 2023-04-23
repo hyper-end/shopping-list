@@ -7,9 +7,9 @@ import "./App.css";
 
 import ProtectedRoute from "./Utils/ProtectedRoute";
 import Layout from "./Layout";
+import NotFound from "./Components/NotFound";
 
 function App() {
-  
   return (
     <div className="app-container">
       <BrowserRouter>
@@ -26,6 +26,7 @@ function App() {
             <Route path="/login" element={<LoginForm />}></Route>
             <Route path="/register" element={<RegisterForm />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </div>
