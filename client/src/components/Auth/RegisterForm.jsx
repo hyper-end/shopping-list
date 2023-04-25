@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../Utils/axios";
-import "./RegisterForm.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 function RegisterForm() {
   // Define a functional component called RegisterForm
@@ -57,38 +58,48 @@ function RegisterForm() {
   return (
     <div className="form-container">
       <h2>Register</h2>
-      <form className="register-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="username"
+
+<Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter user name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            placeholder="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
-        <div className="form-group">
-          <label>Confirm Password</label>
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            placeholder="Confirm password"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </div>
-        {errorMessage && <div className="error-message">{errorMessage}</div>}{" "}
-        {/* Render the error message if it exists */}
-        <button type="submit">Register</button>
-      </form>
+        </Form.Group>
+
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+        <Button variant="primary" type="submit">
+        Register
+        </Button>
+      </Form>
+
     </div>
   );
 }

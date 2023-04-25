@@ -19,7 +19,7 @@ const Layout = () => {
     <UserContext.Provider value={{ user, setUser }}>
       <>
         {/* Navigation bar */}
-        <Navbar bg="dark" variant="dark">
+        <Navbar variant="light" bg="light">
           <Container>
             <Navbar.Brand href="/">Hyper Do</Navbar.Brand>
             <Navbar.Toggle />
@@ -36,7 +36,7 @@ const Layout = () => {
         </Navbar>
 
         {/* Application container */}
-        <div className="app-container">
+        <div className="content-container">
           {/* Render nested components */}
           <Outlet />
         </div>

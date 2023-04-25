@@ -1,3 +1,4 @@
+import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../../Utils/UserContext";
 import { useContext } from "react";
@@ -14,9 +15,8 @@ const AuthStatus = () => {
   if (!user.isAuth) {
     return (
       <>
-        <Link to="/login">Login</Link>
-        &nbsp;
-        <Link to="/register">Sign Up</Link>
+        <Link className="btn btn-link" to="/register">Register</Link>
+        <Link className="btn btn-primary btn-login" to="/login">Login</Link>
       </>
     );
   }
@@ -25,13 +25,13 @@ const AuthStatus = () => {
     <>
       <span>Welcome {user.user.username}!</span>
       &nbsp;
-      <button
+      <Button
         onClick={() => {
           signout();
         }}
       >
         Logout
-      </button>
+      </Button>
     </>
   );
 };
