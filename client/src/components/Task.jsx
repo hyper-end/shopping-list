@@ -19,10 +19,9 @@ const Task = ({ todo, onCheck, onRemove }) => {
         {todo.title}
       </span>
       <button
-        className="fa fa-times"
         style={{ background: "none", border: "none" }}
         onClick={() => onRemove(todo.id)}
-      />
+      >X</button>
     </li>
   );
 };
