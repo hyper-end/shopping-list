@@ -4,7 +4,7 @@ This is a todo-list made with React(frontend) and a simple webserver written in 
 
 ![](preview/preview.gif)
 
-This is an learning by experience project. Use at your own risk.
+This is an learning by experience project.
 
 ## Features
 
@@ -20,17 +20,27 @@ This is an learning by experience project. Use at your own risk.
 ## Usage & Requirements
 * You need to have npm 16+ installed
 * You need to have a database on Postgres and add the information to the .env file in the following format:
+
 DB_USERNAME=test
+
 DB_PASSWORD=khgJHGfy4656
+
 DB_URL=someurl
+
 DB_PORT=5432
+
 DB_NAME=dbname
+
 JWT_SECRET=genarate using: "openssl rand -hex 32"
+
 APP_PORT=5000
+
 API_ENDPOINT=http://localhost:5000/
+
 APP_CLIENT=http://localhost:3000/
 
-For the API, run npm install and then npm start
+
+For the API, in root folder run npm install and then npm start
 ```
 npm i && npm start
 ```
