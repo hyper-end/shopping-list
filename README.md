@@ -4,7 +4,7 @@ This is a todo-list made with React(frontend) and a simple webserver written in 
 
 ![](preview/preview.gif)
 
-This is an learning by experience project.
+This is an learning by experience project. UI Demo: https://hyper-do.netlify.app/ Backend host: https://hyper-do.onrender.com/
 
 ## Features
 
